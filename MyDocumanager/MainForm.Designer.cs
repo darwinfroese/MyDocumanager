@@ -33,6 +33,7 @@
       this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
       this.infoStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+      this.infoStatusStrip = new System.Windows.Forms.ToolStripStatusLabel();
       this.mainListView = new System.Windows.Forms.ListView();
       this.titleColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -73,7 +74,8 @@
       // mainStatusStrip
       // 
       this.mainStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.infoStatusLabel});
+            this.infoStatusLabel,
+            this.infoStatusStrip});
       this.mainStatusStrip.Location = new System.Drawing.Point(0, 548);
       this.mainStatusStrip.Name = "mainStatusStrip";
       this.mainStatusStrip.Size = new System.Drawing.Size(594, 22);
@@ -84,6 +86,11 @@
       // 
       this.infoStatusLabel.Name = "infoStatusLabel";
       this.infoStatusLabel.Size = new System.Drawing.Size(0, 17);
+      // 
+      // infoStatusStrip
+      // 
+      this.infoStatusStrip.Name = "infoStatusStrip";
+      this.infoStatusStrip.Size = new System.Drawing.Size(0, 17);
       // 
       // mainListView
       // 
@@ -171,6 +178,7 @@
       this.MainMenuStrip = this.mainMenuStrip;
       this.Name = "MainForm";
       this.Text = "My Documanager";
+      this.Load += new System.EventHandler(this.OnLoad);
       this.mainMenuStrip.ResumeLayout(false);
       this.mainMenuStrip.PerformLayout();
       this.mainStatusStrip.ResumeLayout(false);
@@ -196,6 +204,7 @@
     private System.Windows.Forms.Button editButton;
     private System.Windows.Forms.FolderBrowserDialog folderBrowser;
     private System.Windows.Forms.OpenFileDialog fileBrowser;
+    private System.Windows.Forms.ToolStripStatusLabel infoStatusStrip;
   }
 }
 
