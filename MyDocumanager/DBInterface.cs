@@ -1,53 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 
 namespace MyDocumanager
 {
   class DBInterface
   {
-    private string _dbLocation = ".\\";
-    private string _dbFileName = "documanager.ddb";
+    private const string DbConnectionString =
+      @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\documanagerDB.mdf;Integrated Security=True";
 
-    private StreamWriter writer;
-    private StreamReader reader;
+    private string _dbLocation = @"D:\programming\home_work\MyDocumanager\MyDocumanager";
+    private SqlConnection _conn;
 
     public DBInterface()
     {
-      
+      AppDomain.CurrentDomain.SetData("DataDirectory", _dbLocation);
+      _conn = new SqlConnection(DbConnectionString);
     }
 
     public void Insert(Document d)
     {
-      writer = Open();
-      writer.WriteLine(d.ToString());
-      writer.Close();
+      SqlCommand cmd = new SqlCommand("InsertDocument", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@path", d.FilePath);
+      cmd.Parameters.AddWithValue("@title", d.Title);
+      cmd.Parameters.AddWithValue("@description", d.Description);
+
+      _conn.Open();
+      SqlTransaction trans = _conn.BeginTransaction();
+      cmd.Transaction = trans;
+      cmd.ExecuteNonQuery();
+
+      trans.Commit();
+      _conn.Close();
     }
 
     public List<Document> GetAllDocuments()
     {
       List<Document> documents = new List<Document>();
 
-      if (File.Exists(_dbLocation + _dbFileName))
-        reader = new StreamReader(_dbLocation + _dbFileName);
-      else
-        return null;
+      SqlCommand cmd = new SqlCommand("GetAllDocuments", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+      _conn.Open();
 
-      string line;
-      while (!String.IsNullOrWhiteSpace(line = reader.ReadLine()))
-      {
-        string[] parameters = line.Split('|');
+      SqlDataReader reader = cmd.ExecuteReader();
 
-        documents.Add(new Document(parameters[0], parameters[1], parameters[2]));
-      }
+      while (reader.Read())
+        documents.Add(new Document( reader["Path"].ToString(),
+                                    reader["Title"].ToString(),
+                                    reader["Description"].ToString()));
+      
+      _conn.Close();
 
-      reader.Close();
       return documents;
-    } 
-
-    private StreamWriter Open()
-    {
-      return File.AppendText(_dbLocation + _dbFileName);
     }
   }
 }
