@@ -4,26 +4,39 @@ namespace MyDocumanager
 {
   class Document : ListViewItem
   {
-    public string FilePath { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
+    private string _filePath;
+    private string _title;
+    private string _description;
+
 
     public Document(string fp, string t) : base(t)
     {
-      FilePath = fp;
-      Title = t;
-      Description = "";
+      _filePath = fp;
+      _title = t;
+      _description = "";
 
-      base.SubItems.Add(Description);
+      base.SubItems.Add(_description);
     }
 
     public Document(string fp, string t, string d) : base(t)
     {
-      FilePath = fp;
-      Title = t;
-      Description = d;
+      _filePath = fp;
+      _title = t;
+      _description = d;
 
-      base.SubItems.Add(Description);
+      base.SubItems.Add(_description);
+    }
+
+    public bool Equals(Document d)
+    {
+      bool isEqual = (d._filePath == _filePath);
+
+      return isEqual;
+    }
+
+    public int GenerateHashCode()
+    {
+      return _filePath.GetHashCode();
     }
   }
 }

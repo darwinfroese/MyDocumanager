@@ -15,5 +15,15 @@ namespace MyDocumanager
     {
       return _documents.Add(d);
     }
+
+    public void UpdateDocument(Document d)
+    {
+      
+    }
+
+    public void RemoveDocument(Document d)
+    {
+      
+    }
   }
 }
