@@ -4,10 +4,9 @@ namespace MyDocumanager
 {
   class Document : ListViewItem
   {
-    private string _filePath;
-    private string _title;
-    private string _description;
-
+    private readonly string _filePath;
+    private readonly string _title;
+    private readonly string _description;
 
     public Document(string fp, string t) : base(t)
     {
