@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace MyDocumanager
 {
   public partial class MainForm : Form
   {
+    private DocumentHandler _dh;
+
     public MainForm()
     {
       InitializeComponent();
+      
+      _dh = new DocumentHandler();
     }
 
     private void AddDocument(object sender, EventArgs e)
@@ -22,7 +20,7 @@ namespace MyDocumanager
       fileBrowser.ShowDialog();
       string file = fileBrowser.FileName;
 
-      Console.WriteLine(file);
+      InsertDocument(file);
     }
 
     private void AddFolder(object sender, EventArgs e)
@@ -30,7 +28,17 @@ namespace MyDocumanager
       folderBrowser.ShowDialog();
       string folder = folderBrowser.SelectedPath;
 
-      Console.WriteLine(folder);
+      string[] files = Directory.GetFiles(folder);
+
+      foreach (string file in files)
+        InsertDocument(file);
+    }
+
+    private void InsertDocument(string file)
+    {
+      Document d = new Document(file, Path.GetFileName(file));
+      if (_dh.AddDocument(d))
+        mainListView.Items.Add(d);
     }
   }
 }
