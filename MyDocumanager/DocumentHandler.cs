@@ -20,6 +20,9 @@ namespace MyDocumanager
     {
       Document d = _dbi.Insert(filePath, fileName);
 
+      if (d == null)
+        return null;
+
       if (_documents.Add(d))
         return d;
       else
@@ -40,6 +43,28 @@ namespace MyDocumanager
 
       _dbi.Remove(d);
     }
+
+    public List<Document> FindDocumentsContainingString(string term)
+    {
+      List<Document> results = new List<Document>();
+
+      foreach (Document d in _documents)
+        if (d.Title.ToLower().Contains(term.ToLower()) || d.Description.ToLower().Contains(term.ToLower()))
+          results.Add(d);
+
+      return results;
+    } 
+
+    public List<Document> FindDocumentsByTitle(string term)
+    {
+      List<Document> results = new List<Document>();
+
+      foreach (Document d in _documents)
+        if (d.Title.ToLower().StartsWith(term.ToLower()))
+          results.Add(d);
+
+      return results;
+    } 
 
     public List<Document> GetAllDocuments()
     {

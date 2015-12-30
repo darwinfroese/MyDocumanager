@@ -86,5 +86,35 @@ namespace MyDocumanager
       _ef.Document = _selected;
       _ef.ShowDialog();
     }
+
+    private void OnFocus(object sender, EventArgs e)
+    {
+      searchTextBox.Text = "";
+    }
+
+    private void LostFocus(object sender, EventArgs e)
+    {
+      if (String.IsNullOrWhiteSpace(searchTextBox.Text))
+        searchTextBox.Text = "Search...";
+    }
+
+    private void TextChanged(object sender, EventArgs e)
+    {
+      List<Document> results;
+
+      if (String.IsNullOrWhiteSpace(searchTextBox.Text) || searchTextBox.Text == "Search...")
+      {
+        mainListView.Items.Clear();
+        results = _dh.GetAllDocuments();
+      }
+      else
+      {
+        mainListView.Items.Clear();
+        results = _dh.FindDocumentsContainingString(searchTextBox.Text);
+      }
+
+      foreach (Document d in results)
+        mainListView.Items.Add(d);
+    }
   }
 }

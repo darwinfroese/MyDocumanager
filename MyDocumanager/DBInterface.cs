@@ -25,6 +25,8 @@ namespace MyDocumanager
 
     public Document Insert(string filePath, string title)
     {
+      Document d;
+
       SqlCommand cmd = new SqlCommand("InsertDocument", _conn);
       cmd.CommandType = CommandType.StoredProcedure;
 
@@ -37,9 +39,15 @@ namespace MyDocumanager
       _conn.Open();
       SqlTransaction trans = _conn.BeginTransaction();
       cmd.Transaction = trans;
-      cmd.ExecuteNonQuery();
-
-      Document d = new Document((int)(cmd.Parameters["@ret_id"].Value), filePath, title, "");
+      try
+      {
+        cmd.ExecuteNonQuery();
+        d = new Document((int)(cmd.Parameters["@ret_id"].Value), filePath, title, "");
+      }
+      catch (SqlException exception)
+      {
+        d = null;
+      }
 
       trans.Commit();
       _conn.Close();

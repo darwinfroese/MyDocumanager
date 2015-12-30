@@ -131,6 +131,9 @@
       this.searchTextBox.Size = new System.Drawing.Size(656, 20);
       this.searchTextBox.TabIndex = 3;
       this.searchTextBox.Text = "Search...";
+      this.searchTextBox.TextChanged += new System.EventHandler(this.TextChanged);
+      this.searchTextBox.Enter += new System.EventHandler(this.OnFocus);
+      this.searchTextBox.Leave += new System.EventHandler(this.LostFocus);
       // 
       // addDocumentButton
       // 
