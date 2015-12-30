@@ -53,7 +53,7 @@
             this.fileMenuItem});
       this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
       this.mainMenuStrip.Name = "mainMenuStrip";
-      this.mainMenuStrip.Size = new System.Drawing.Size(594, 24);
+      this.mainMenuStrip.Size = new System.Drawing.Size(680, 24);
       this.mainMenuStrip.TabIndex = 0;
       this.mainMenuStrip.Text = "menuStrip1";
       // 
@@ -68,7 +68,7 @@
       // exitMenuItem
       // 
       this.exitMenuItem.Name = "exitMenuItem";
-      this.exitMenuItem.Size = new System.Drawing.Size(92, 22);
+      this.exitMenuItem.Size = new System.Drawing.Size(152, 22);
       this.exitMenuItem.Text = "Exit";
       // 
       // mainStatusStrip
@@ -78,7 +78,7 @@
             this.infoStatusStrip});
       this.mainStatusStrip.Location = new System.Drawing.Point(0, 548);
       this.mainStatusStrip.Name = "mainStatusStrip";
-      this.mainStatusStrip.Size = new System.Drawing.Size(594, 22);
+      this.mainStatusStrip.Size = new System.Drawing.Size(680, 22);
       this.mainStatusStrip.TabIndex = 1;
       this.mainStatusStrip.Text = "statusStrip1";
       // 
@@ -102,12 +102,14 @@
             this.titleColumn,
             this.descriptionColumn});
       this.mainListView.Location = new System.Drawing.Point(12, 106);
+      this.mainListView.MultiSelect = false;
       this.mainListView.Name = "mainListView";
-      this.mainListView.Size = new System.Drawing.Size(570, 439);
+      this.mainListView.Size = new System.Drawing.Size(656, 439);
       this.mainListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.mainListView.TabIndex = 2;
       this.mainListView.UseCompatibleStateImageBehavior = false;
       this.mainListView.View = System.Windows.Forms.View.Details;
+      this.mainListView.DoubleClick += new System.EventHandler(this.EditDocument);
       // 
       // titleColumn
       // 
@@ -126,7 +128,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.searchTextBox.Location = new System.Drawing.Point(12, 80);
       this.searchTextBox.Name = "searchTextBox";
-      this.searchTextBox.Size = new System.Drawing.Size(570, 20);
+      this.searchTextBox.Size = new System.Drawing.Size(656, 20);
       this.searchTextBox.TabIndex = 3;
       this.searchTextBox.Text = "Search...";
       // 
@@ -158,6 +160,7 @@
       this.editButton.TabIndex = 6;
       this.editButton.Text = "Edit Selected";
       this.editButton.UseVisualStyleBackColor = true;
+      this.editButton.Click += new System.EventHandler(this.EditDocument);
       // 
       // folderBrowser
       // 
@@ -167,7 +170,7 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(594, 570);
+      this.ClientSize = new System.Drawing.Size(680, 570);
       this.Controls.Add(this.editButton);
       this.Controls.Add(this.addFolderButton);
       this.Controls.Add(this.addDocumentButton);

@@ -16,24 +16,29 @@ namespace MyDocumanager
       GetStoredDocuments();
     }
 
-    public bool AddDocument(Document d)
+    public Document AddDocument(string filePath, string fileName)
     {
-      bool inserted = _documents.Add(d);
+      Document d = _dbi.Insert(filePath, fileName);
 
-      if (inserted)
-        _dbi.Insert(d);
-
-      return inserted;
+      if (_documents.Add(d))
+        return d;
+      else
+        return null;
     }
 
-    public void UpdateDocument(Document d)
+    public void UpdateDocument(Document oldDocument, Document newDocument)
     {
-      
+      _documents.Remove(oldDocument);
+      _documents.Add(newDocument);
+
+      _dbi.Update(newDocument);
     }
 
     public void RemoveDocument(Document d)
     {
-      
+      _documents.Remove(d);
+
+      _dbi.Remove(d);
     }
 
     public List<Document> GetAllDocuments()

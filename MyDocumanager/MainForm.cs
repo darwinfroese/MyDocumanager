@@ -8,12 +8,24 @@ namespace MyDocumanager
   public partial class MainForm : Form
   {
     private DocumentHandler _dh;
+    private editForm _ef;
+    private Document _selected;
 
     public MainForm()
     {
       InitializeComponent();
       
       _dh = new DocumentHandler();
+      _ef = new editForm();
+      _ef.Owner = this;
+    }
+
+    public void UpdateDocument(Document d)
+    {
+      mainListView.Items.Remove(_selected);
+      mainListView.Items.Add(d);
+
+      _dh.UpdateDocument(_selected, d);
     }
 
     private void AddDocument(object sender, EventArgs e)
@@ -32,6 +44,9 @@ namespace MyDocumanager
       folderBrowser.ShowDialog();
       string folder = folderBrowser.SelectedPath;
 
+      if (String.IsNullOrWhiteSpace(folder))
+        return;
+
       string[] files = Directory.GetFiles(folder);
 
       foreach (string file in files)
@@ -43,19 +58,18 @@ namespace MyDocumanager
 
     private bool InsertDocument(string file)
     {
-      bool inserted = false;
-
       if (String.IsNullOrWhiteSpace(file))
-        return inserted;
+        return false;
 
-      Document d = new Document(file, Path.GetFileName(file));
+      Document d = _dh.AddDocument(file, Path.GetFileName(file));
 
-      inserted = _dh.AddDocument(d);
-
-      if (inserted)
+      if (d != null)
+      {
         mainListView.Items.Add(d);
+        return true;
+      }
 
-      return inserted;
+      return false;
     }
 
     private void OnLoad(object sender, EventArgs e)
@@ -64,6 +78,13 @@ namespace MyDocumanager
 
       foreach (Document d in documents)
         mainListView.Items.Add(d);
+    }
+
+    private void EditDocument(object sender, EventArgs e)
+    {
+      _selected = (Document) (mainListView.SelectedItems[0]);
+      _ef.Document = _selected;
+      _ef.ShowDialog();
     }
   }
 }
