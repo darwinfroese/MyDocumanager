@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace MyDocumanager
@@ -39,8 +40,6 @@ namespace MyDocumanager
 
     private void AddFolder(object sender, EventArgs e)
     {
-      int insertedCount = 0;
-
       folderBrowser.ShowDialog();
       string folder = folderBrowser.SelectedPath;
 
@@ -49,9 +48,7 @@ namespace MyDocumanager
 
       string[] files = Directory.GetFiles(folder);
 
-      foreach (string file in files)
-        if (InsertDocument(file))
-          insertedCount++;
+      int insertedCount = files.Count(InsertDocument);
 
       infoStatusLabel.Text = insertedCount + " documents inserted.";
     }
@@ -63,13 +60,11 @@ namespace MyDocumanager
 
       Document d = _dh.AddDocument(file, Path.GetFileName(file));
 
-      if (d != null)
-      {
-        mainListView.Items.Add(d);
-        return true;
-      }
+      if (d == null)
+        return false;
 
-      return false;
+      mainListView.Items.Add(d);
+      return true;
     }
 
     private void OnLoad(object sender, EventArgs e)
