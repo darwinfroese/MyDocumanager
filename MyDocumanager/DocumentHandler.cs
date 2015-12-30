@@ -23,10 +23,7 @@ namespace MyDocumanager
       if (d == null)
         return null;
 
-      if (_documents.Add(d))
-        return d;
-      else
-        return null;
+      return _documents.Add(d) ? d : null;
     }
 
     public void UpdateDocument(Document oldDocument, Document newDocument)
@@ -46,25 +43,13 @@ namespace MyDocumanager
 
     public List<Document> FindDocumentsContainingString(string term)
     {
-      List<Document> results = new List<Document>();
-
-      foreach (Document d in _documents)
-        if (d.Title.ToLower().Contains(term.ToLower()) || d.Description.ToLower().Contains(term.ToLower()))
-          results.Add(d);
-
-      return results;
-    } 
+      return _documents.Where(d => d.Title.ToLower().Contains(term.ToLower()) || d.Description.ToLower().Contains(term.ToLower())).ToList();
+    }
 
     public List<Document> FindDocumentsByTitle(string term)
     {
-      List<Document> results = new List<Document>();
-
-      foreach (Document d in _documents)
-        if (d.Title.ToLower().StartsWith(term.ToLower()))
-          results.Add(d);
-
-      return results;
-    } 
+      return _documents.Where(d => d.Title.ToLower().StartsWith(term.ToLower())).ToList();
+    }
 
     public List<Document> GetAllDocuments()
     {
