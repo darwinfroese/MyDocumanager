@@ -33,8 +33,9 @@ namespace MyDocumanager
 
       Document d = BuildDocument();
 
-      parent.UpdateDocument(d);
-      parent.UpdateTags(tagTextBox.Text.Split(','));
+      string[] tags = tagTextBox.Text.Split(',');
+      string[] authors = authorTextBox.Text.Split(',');
+      parent.UpdateDocument(d, tags, authors);
       this.Close();
     }
 
@@ -56,6 +57,7 @@ namespace MyDocumanager
       titleTextBox.Text = Document.Title;
       descriptionTextBox.Text = Document.Description;
       tagTextBox.Text = FillTagBox();
+      authorTextBox.Text = FillAuthorBox();
     }
 
     private string FillTagBox()
@@ -66,11 +68,25 @@ namespace MyDocumanager
         return text;
 
       foreach (Tag t in Document.Tags)
-      {
         text += t.Name + ", ";
-      }
 
-      if (text.Length > 0 && text[text.Length - 1] == ' ')
+      if (text.Length > 0)
+        text = text.Substring(0, text.Length - 2);
+
+      return text;
+    }
+
+    private string FillAuthorBox()
+    {
+      string text = "";
+
+      if (Document.Authors == null)
+        return text;
+
+      foreach (Author a in Document.Authors)
+        text += a.Name + ", ";
+
+      if (text.Length > 0)
         text = text.Substring(0, text.Length - 2);
 
       return text;

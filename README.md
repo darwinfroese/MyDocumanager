@@ -2,12 +2,10 @@
 
 Software to make managing document collections simpler.
 
-### Version 0.2
+### Version 1.0
+Version 1.0 of Documanager
 
-* Tags can be added and removed from documents
-* Files can be searched by Title or Description containing search params
-
-### Version 0.1
-
-* Files can be added in individually or by folder
-* Docmuent data can be edited (description or title) and preserved
+* Insert documents individually or by the folder
+* Add descriptions, tags, or authors to your document information
+* Titles are edited in application only
+* View documents (pdfs) right from MyDocumanager

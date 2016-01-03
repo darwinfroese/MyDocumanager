@@ -47,6 +47,8 @@
       this.itemMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.editDocumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.viewDocumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.authorColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.tagColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.mainMenuStrip.SuspendLayout();
       this.mainStatusStrip.SuspendLayout();
       this.itemMenu.SuspendLayout();
@@ -105,7 +107,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.mainListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.titleColumn,
-            this.descriptionColumn});
+            this.descriptionColumn,
+            this.authorColumn,
+            this.tagColumn});
       this.mainListView.Location = new System.Drawing.Point(12, 106);
       this.mainListView.MultiSelect = false;
       this.mainListView.Name = "mainListView";
@@ -119,12 +123,12 @@
       // titleColumn
       // 
       this.titleColumn.Text = "Title";
-      this.titleColumn.Width = 114;
+      this.titleColumn.Width = 164;
       // 
       // descriptionColumn
       // 
       this.descriptionColumn.Text = "Description";
-      this.descriptionColumn.Width = 323;
+      this.descriptionColumn.Width = 164;
       // 
       // searchTextBox
       // 
@@ -180,7 +184,7 @@
             this.editDocumentToolStripMenuItem,
             this.viewDocumentToolStripMenuItem});
       this.itemMenu.Name = "itemMenu";
-      this.itemMenu.Size = new System.Drawing.Size(159, 70);
+      this.itemMenu.Size = new System.Drawing.Size(159, 48);
       this.itemMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MenuOpen);
       // 
       // editDocumentToolStripMenuItem
@@ -196,6 +200,16 @@
       this.viewDocumentToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
       this.viewDocumentToolStripMenuItem.Text = "View Document";
       this.viewDocumentToolStripMenuItem.Click += new System.EventHandler(this.ViewDocument);
+      // 
+      // authorColumn
+      // 
+      this.authorColumn.Text = "Authors";
+      this.authorColumn.Width = 164;
+      // 
+      // tagColumn
+      // 
+      this.tagColumn.Text = "Tags";
+      this.tagColumn.Width = 164;
       // 
       // MainForm
       // 
@@ -243,6 +257,8 @@
     private System.Windows.Forms.ContextMenuStrip itemMenu;
     private System.Windows.Forms.ToolStripMenuItem editDocumentToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem viewDocumentToolStripMenuItem;
+    private System.Windows.Forms.ColumnHeader authorColumn;
+    private System.Windows.Forms.ColumnHeader tagColumn;
   }
 }
 

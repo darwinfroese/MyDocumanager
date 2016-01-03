@@ -108,7 +108,10 @@ namespace MyDocumanager
       _conn.Close();
 
       foreach (Document d in documents)
+      {
         d.Tags = GetDocumentTags(d.ID);
+        d.Authors = GetDocumentAuthors(d.ID);
+      }
 
       return documents;
     }
@@ -164,7 +167,7 @@ namespace MyDocumanager
       // TODO: Optimize this
       foreach (Tag t in iterable)
       {
-        bool found = FoundInArray(t, names);
+        bool found = TagInArray(t, names);
         
         if (!found)
         {
@@ -176,7 +179,7 @@ namespace MyDocumanager
 
       foreach (string n in names)
       {
-        int index = FoundInList(n, storedTags);
+        int index = TagInList(n, storedTags);
         int id = 0;
 
         if (index == -1)
@@ -200,7 +203,7 @@ namespace MyDocumanager
             found = true;
         }
 
-        if (!found)
+        if (!found && !String.IsNullOrWhiteSpace(t.Name.Trim()))
         {
           docTags.Add(t);
           AddDocumentTag(docID, t.ID);
@@ -210,7 +213,7 @@ namespace MyDocumanager
       return docTags;
     }
 
-    private int FoundInList(string name, List<Tag> tags)
+    private int TagInList(string name, List<Tag> tags)
     {
       int index = -1;
       bool found = false;
@@ -252,7 +255,7 @@ namespace MyDocumanager
       _conn.Close();
     }
 
-    private bool FoundInArray(Tag tag, string[] names)
+    private bool TagInArray(Tag tag, string[] names)
     {
       bool found = false;
 
@@ -268,6 +271,9 @@ namespace MyDocumanager
     private int CreateTag(string name)
     {
       int id = -1;
+
+      if (String.IsNullOrWhiteSpace(name))
+        return id;
 
       SqlCommand cmd = new SqlCommand("CreateTag", _conn);
       cmd.CommandType = CommandType.StoredProcedure;
@@ -310,6 +316,201 @@ namespace MyDocumanager
 
       trans.Commit();
       _conn.Close();
+    }
+
+    private List<Author> GetDocumentAuthors(int id)
+    {
+      List<Author> authors = new List<Author>();
+
+      SqlCommand cmd = new SqlCommand("GetDocumentAuthors", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@docID", id);
+
+      _conn.Open();
+      SqlDataReader reader = cmd.ExecuteReader();
+
+      while (reader.Read())
+        authors.Add(new Author((int)(reader["id"]), reader["name"].ToString()));
+
+      _conn.Close();
+      return authors;
+    }
+
+    public List<Author> GetAuthors()
+    {
+      List<Author> authors = new List<Author>();
+
+      SqlCommand cmd = new SqlCommand("GetAllAuthors", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      _conn.Open();
+      SqlDataReader reader = cmd.ExecuteReader();
+
+      while (reader.Read())
+        authors.Add(new Author((int)(reader["id"]), reader["name"].ToString()));
+
+      _conn.Close();
+      return authors;
+    }
+
+    public List<Author> UpdateAuthors(int docID, string[] authors)
+    {
+      // Documents current authors
+      List<Author> docAuthors = GetDocumentAuthors(docID);
+      // All available authors
+      List<Author> storedAuthors = GetAuthors();
+      // Authors to add (if not already added)
+      List<Author> authorList = new List<Author>();
+
+      // This is to iterate over for removing from docAuthors
+      Author[] iterable = new Author[docAuthors.Count];
+      docAuthors.CopyTo(iterable);
+
+      // TODO: Optimize this
+      foreach (Author a in iterable)
+      {
+        bool found = AuthorInArray(a, authors);
+
+        if (!found)
+        {
+          // remove
+          RemoveDocumentAuthor(docID, a.ID);
+          docAuthors.Remove(a);
+        }
+      }
+
+      foreach (string a in authors)
+      {
+        int index = AuthorInList(a, storedAuthors);
+        int id = 0;
+
+        if (index == -1)
+          // Create and insert new tag
+          id = CreateAuthor(a);
+        else
+          id = storedAuthors[index].ID;
+
+        authorList.Add(new Author(id, a.Trim()));
+      }
+
+      //iterable = new Tag[docTags.Count];
+      //docTags.CopyTo(iterable);
+      foreach (Author a in authorList)
+      {
+        bool found = false;
+
+        for (int i = 0; i < docAuthors.Count && !found; i++)
+        {
+          if (String.Equals(docAuthors[i].Name.Trim(), a.Name.Trim(), StringComparison.CurrentCultureIgnoreCase))
+            found = true;
+        }
+
+        if (!found && !String.IsNullOrWhiteSpace(a.Name.Trim()))
+        {
+          docAuthors.Add(a);
+          AddDocumentAuthor(docID, a.ID);
+        }
+      }
+
+      return docAuthors;
+    }
+
+    private void AddDocumentAuthor(int docID, int authID)
+    {
+      SqlCommand cmd = new SqlCommand("AddDocumentAuthor", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@docID", docID);
+      cmd.Parameters.AddWithValue("@authID", authID);
+
+      _conn.Open();
+      SqlTransaction trans = _conn.BeginTransaction();
+      cmd.Transaction = trans;
+      cmd.ExecuteNonQuery();
+
+      trans.Commit();
+      _conn.Close();
+    }
+
+    private void RemoveDocumentAuthor(int docID, int authID)
+    {
+      SqlCommand cmd = new SqlCommand("RemoveDocumentAuthor", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@docID", docID);
+      cmd.Parameters.AddWithValue("@authorID", authID);
+
+      _conn.Open();
+      SqlTransaction trans = _conn.BeginTransaction();
+      cmd.Transaction = trans;
+      cmd.ExecuteNonQuery();
+
+      trans.Commit();
+      _conn.Close();
+    }
+
+    private bool AuthorInArray(Author a, string[] authors)
+    {
+      bool found = false;
+
+      for (int i = 0; i < authors.Length && !found; i++)
+      {
+        if (String.Equals(a.Name.Trim(), authors[i].Trim(), StringComparison.CurrentCultureIgnoreCase))
+          found = true;
+      }
+
+      return found;
+    }
+
+    private int AuthorInList(string author, List<Author> authors)
+    {
+      int index = -1;
+      bool found = false;
+
+      for (int i = 0; i < authors.Count && !found; i++)
+      {
+        if (String.Equals(authors[i].Name.Trim(), author.Trim(), StringComparison.CurrentCultureIgnoreCase))
+        {
+          found = true;
+          index = i;
+        }
+      }
+
+      return index;
+    }
+
+    private int CreateAuthor(string name)
+    {
+      int id = -1;
+
+      if (String.IsNullOrWhiteSpace(name))
+        return id;
+
+      SqlCommand cmd = new SqlCommand("CreateAuthor", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@authorName", name.Trim());
+      SqlParameter returnValue = cmd.Parameters.Add("@ret_id", SqlDbType.Int);
+      returnValue.Direction = ParameterDirection.ReturnValue;
+
+      _conn.Open();
+      SqlTransaction trans = _conn.BeginTransaction();
+      cmd.Transaction = trans;
+      try
+      {
+        cmd.ExecuteNonQuery();
+        id = (int)(cmd.Parameters["@ret_id"].Value);
+      }
+      catch (SqlException exception)
+      {
+        id = -1;
+      }
+
+      trans.Commit();
+      _conn.Close();
+
+      return id;
     }
   }
 }

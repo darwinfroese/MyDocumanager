@@ -64,6 +64,11 @@ namespace MyDocumanager
       return _dbi.UpdateTags(d.ID, tags);
     }
 
+    public List<Author> UpdateAuthors(Document d, string[] authors)
+    {
+      return _dbi.UpdateAuthors(d.ID, authors);
+    } 
+
     private void GetStoredDocuments()
     {
       List<Document> documents = _dbi.GetAllDocuments();

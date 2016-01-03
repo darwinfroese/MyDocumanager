@@ -18,30 +18,24 @@ namespace MyDocumanager
       InitializeComponent();
       
       _dh = new DocumentHandler();
-      _ef = new editForm();
-      _ef.Owner = this;
 
       mainListView.ContextMenuStrip = itemMenu;
     }
 
-    public void UpdateDocument(Document d)
-    {
-      mainListView.Items.Remove(_selected);
-      mainListView.Items.Add(d);
-
-      _dh.UpdateDocument(_selected, d);
-      _selected = d;
-    }
-
-    public void UpdateTags(string[] tags)
+    public void UpdateDocument(Document doc, string[] tags, string[] authors)
     {
       List<Tag> tagList = _dh.UpdateTags(_selected, tags);
+      List<Author> authorList = _dh.UpdateAuthors(_selected, authors);
 
       mainListView.Items.Remove(_selected);
-      ListViewItem item = mainListView.Items.Add(_selected);
+      ListViewItem item = mainListView.Items.Add(doc);
 
       Document d = (Document) (item);
       d.Tags = tagList;
+      d.Authors = authorList;
+
+      _dh.UpdateDocument(_selected, d);
+      _selected = d;
     }
 
     private void AddDocument(object sender, EventArgs e)
@@ -103,6 +97,8 @@ namespace MyDocumanager
         return;
 
       _selected = (Document) (mainListView.SelectedItems[0]);
+      _ef = new editForm();
+      _ef.Owner = this;
       _ef.Document = _selected;
       _ef.ShowDialog();
     }

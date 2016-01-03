@@ -115,7 +115,7 @@
       this.titleTextBox.Location = new System.Drawing.Point(12, 79);
       this.titleTextBox.Name = "titleTextBox";
       this.titleTextBox.Size = new System.Drawing.Size(560, 22);
-      this.titleTextBox.TabIndex = 6;
+      this.titleTextBox.TabIndex = 0;
       // 
       // descriptionTextBox
       // 
@@ -125,7 +125,7 @@
       this.descriptionTextBox.Multiline = true;
       this.descriptionTextBox.Name = "descriptionTextBox";
       this.descriptionTextBox.Size = new System.Drawing.Size(560, 200);
-      this.descriptionTextBox.TabIndex = 7;
+      this.descriptionTextBox.TabIndex = 3;
       // 
       // authorTextBox
       // 
@@ -134,7 +134,7 @@
       this.authorTextBox.Location = new System.Drawing.Point(12, 123);
       this.authorTextBox.Name = "authorTextBox";
       this.authorTextBox.Size = new System.Drawing.Size(560, 22);
-      this.authorTextBox.TabIndex = 8;
+      this.authorTextBox.TabIndex = 1;
       // 
       // tagTextBox
       // 
@@ -143,15 +143,16 @@
       this.tagTextBox.Location = new System.Drawing.Point(12, 167);
       this.tagTextBox.Name = "tagTextBox";
       this.tagTextBox.Size = new System.Drawing.Size(560, 22);
-      this.tagTextBox.TabIndex = 9;
+      this.tagTextBox.TabIndex = 2;
       // 
       // cancelButton
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.cancelButton.Location = new System.Drawing.Point(416, 416);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 24);
-      this.cancelButton.TabIndex = 10;
+      this.cancelButton.TabIndex = 4;
       this.cancelButton.Text = "Cancel";
       this.cancelButton.UseVisualStyleBackColor = true;
       this.cancelButton.Click += new System.EventHandler(this.CancelUpdate);
@@ -162,15 +163,17 @@
       this.updateButton.Location = new System.Drawing.Point(497, 416);
       this.updateButton.Name = "updateButton";
       this.updateButton.Size = new System.Drawing.Size(75, 24);
-      this.updateButton.TabIndex = 11;
+      this.updateButton.TabIndex = 5;
       this.updateButton.Text = "Update";
       this.updateButton.UseVisualStyleBackColor = true;
       this.updateButton.Click += new System.EventHandler(this.CommitUpdate);
       // 
       // editForm
       // 
+      this.AcceptButton = this.updateButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(584, 452);
       this.Controls.Add(this.updateButton);
       this.Controls.Add(this.cancelButton);
