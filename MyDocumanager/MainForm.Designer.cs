@@ -28,6 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
+      this.components = new System.ComponentModel.Container();
       this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
       this.fileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.exitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,8 +44,12 @@
       this.editButton = new System.Windows.Forms.Button();
       this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
       this.fileBrowser = new System.Windows.Forms.OpenFileDialog();
+      this.itemMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.editDocumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.viewDocumentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.mainMenuStrip.SuspendLayout();
       this.mainStatusStrip.SuspendLayout();
+      this.itemMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // mainMenuStrip
@@ -68,7 +73,7 @@
       // exitMenuItem
       // 
       this.exitMenuItem.Name = "exitMenuItem";
-      this.exitMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.exitMenuItem.Size = new System.Drawing.Size(92, 22);
       this.exitMenuItem.Text = "Exit";
       // 
       // mainStatusStrip
@@ -109,7 +114,7 @@
       this.mainListView.TabIndex = 2;
       this.mainListView.UseCompatibleStateImageBehavior = false;
       this.mainListView.View = System.Windows.Forms.View.Details;
-      this.mainListView.DoubleClick += new System.EventHandler(this.EditDocument);
+      this.mainListView.DoubleClick += new System.EventHandler(this.ViewDocument);
       // 
       // titleColumn
       // 
@@ -169,6 +174,29 @@
       // 
       this.folderBrowser.RootFolder = System.Environment.SpecialFolder.MyComputer;
       // 
+      // itemMenu
+      // 
+      this.itemMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editDocumentToolStripMenuItem,
+            this.viewDocumentToolStripMenuItem});
+      this.itemMenu.Name = "itemMenu";
+      this.itemMenu.Size = new System.Drawing.Size(159, 70);
+      this.itemMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MenuOpen);
+      // 
+      // editDocumentToolStripMenuItem
+      // 
+      this.editDocumentToolStripMenuItem.Name = "editDocumentToolStripMenuItem";
+      this.editDocumentToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+      this.editDocumentToolStripMenuItem.Text = "Edit Document";
+      this.editDocumentToolStripMenuItem.Click += new System.EventHandler(this.EditDocument);
+      // 
+      // viewDocumentToolStripMenuItem
+      // 
+      this.viewDocumentToolStripMenuItem.Name = "viewDocumentToolStripMenuItem";
+      this.viewDocumentToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+      this.viewDocumentToolStripMenuItem.Text = "View Document";
+      this.viewDocumentToolStripMenuItem.Click += new System.EventHandler(this.ViewDocument);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -189,6 +217,7 @@
       this.mainMenuStrip.PerformLayout();
       this.mainStatusStrip.ResumeLayout(false);
       this.mainStatusStrip.PerformLayout();
+      this.itemMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -211,6 +240,9 @@
     private System.Windows.Forms.FolderBrowserDialog folderBrowser;
     private System.Windows.Forms.OpenFileDialog fileBrowser;
     private System.Windows.Forms.ToolStripStatusLabel infoStatusStrip;
+    private System.Windows.Forms.ContextMenuStrip itemMenu;
+    private System.Windows.Forms.ToolStripMenuItem editDocumentToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem viewDocumentToolStripMenuItem;
   }
 }
 

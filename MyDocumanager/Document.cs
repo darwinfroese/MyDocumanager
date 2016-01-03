@@ -42,11 +42,6 @@ namespace MyDocumanager
       base.SubItems.Add(_description);
     }
 
-    public override string ToString()
-    {
-      return _filePath + "|" + _title + "|" + _description;
-    }
-
     public bool Equals(Document d)
     {
       bool isEqual = (d._filePath == _filePath);

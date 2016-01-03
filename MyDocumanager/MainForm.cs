@@ -10,6 +10,7 @@ namespace MyDocumanager
   {
     private DocumentHandler _dh;
     private editForm _ef;
+    private PdfReader _pf;
     private Document _selected;
 
     public MainForm()
@@ -19,6 +20,8 @@ namespace MyDocumanager
       _dh = new DocumentHandler();
       _ef = new editForm();
       _ef.Owner = this;
+
+      mainListView.ContextMenuStrip = itemMenu;
     }
 
     public void UpdateDocument(Document d)
@@ -75,6 +78,13 @@ namespace MyDocumanager
         mainListView.Items.Add(d);
     }
 
+    private void ViewDocument(object sender, EventArgs e)
+    {
+      _selected = (Document) (mainListView.SelectedItems[0]);
+      _pf = new PdfReader(_selected);
+      _pf.ShowDialog();
+    }
+
     private void EditDocument(object sender, EventArgs e)
     {
       _selected = (Document) (mainListView.SelectedItems[0]);
@@ -110,6 +120,11 @@ namespace MyDocumanager
 
       foreach (Document d in results)
         mainListView.Items.Add(d);
+    }
+
+    private void MenuOpen(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+      e.Cancel = (mainListView.SelectedItems.Count == 0);
     }
   }
 }
