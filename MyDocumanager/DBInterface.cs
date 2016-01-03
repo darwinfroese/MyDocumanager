@@ -158,9 +158,11 @@ namespace MyDocumanager
       List<Tag> storedTags = GetTags();
       // Tags to add (if not already added)
       List<Tag> tags = new List<Tag>();
+      Tag[] iterable = new Tag[docTags.Count];
+      docTags.CopyTo(iterable);
 
       // TODO: Optimize this
-      foreach (Tag t in docTags)
+      foreach (Tag t in iterable)
       {
         bool found = FoundInArray(t, names);
         
@@ -186,13 +188,15 @@ namespace MyDocumanager
         tags.Add(new Tag(n.Trim(), id));
       }
 
+      //iterable = new Tag[docTags.Count];
+      //docTags.CopyTo(iterable);
       foreach (Tag t in tags)
       {
         bool found = false;
 
         for (int i = 0; i < docTags.Count && !found; i++)
         {
-          if (docTags[i].Name.ToLower() == t.Name.ToLower())
+          if (String.Equals(docTags[i].Name, t.Name, StringComparison.CurrentCultureIgnoreCase))
             found = true;
         }
 
