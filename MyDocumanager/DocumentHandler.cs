@@ -56,6 +56,14 @@ namespace MyDocumanager
       return _documents.ToList();
     }
 
+    public List<Tag> UpdateTags(Document d, string[] tags)
+    {
+      // Add/Remove tags from database
+      // Return list of tags in database for the document
+      // Set the list to be the documents list
+      return _dbi.UpdateTags(d.ID, tags);
+    }
+
     private void GetStoredDocuments()
     {
       List<Document> documents = _dbi.GetAllDocuments();

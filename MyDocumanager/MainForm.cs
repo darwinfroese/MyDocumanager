@@ -30,6 +30,18 @@ namespace MyDocumanager
       mainListView.Items.Add(d);
 
       _dh.UpdateDocument(_selected, d);
+      _selected = d;
+    }
+
+    public void UpdateTags(string[] tags)
+    {
+      List<Tag> tagList = _dh.UpdateTags(_selected, tags);
+
+      mainListView.Items.Remove(_selected);
+      ListViewItem item = mainListView.Items.Add(_selected);
+
+      Document d = (Document) (item);
+      d.Tags = tagList;
     }
 
     private void AddDocument(object sender, EventArgs e)
@@ -87,6 +99,9 @@ namespace MyDocumanager
 
     private void EditDocument(object sender, EventArgs e)
     {
+      if (mainListView.SelectedItems.Count == 0)
+        return;
+
       _selected = (Document) (mainListView.SelectedItems[0]);
       _ef.Document = _selected;
       _ef.ShowDialog();

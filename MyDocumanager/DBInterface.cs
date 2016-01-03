@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace MyDocumanager
 {
@@ -108,7 +107,205 @@ namespace MyDocumanager
       
       _conn.Close();
 
+      foreach (Document d in documents)
+        d.Tags = GetDocumentTags(d.ID);
+
       return documents;
+    }
+
+    public List<Tag> GetTags()
+    {
+      List<Tag> tags = new List<Tag>();
+
+      SqlCommand cmd = new SqlCommand("GetTags", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+      _conn.Open();
+
+      SqlDataReader reader = cmd.ExecuteReader();
+
+      while (reader.Read())
+        tags.Add(new Tag(reader["tagName"].ToString(), (int)(reader["id"])));
+
+      _conn.Close();
+      return tags;
+    }
+
+    public List<Tag> GetDocumentTags(int id)
+    {
+      List<Tag> tags = new List<Tag>();
+
+      SqlCommand cmd = new SqlCommand("GetDocumentTags", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@docID", id);
+
+      _conn.Open();
+
+      SqlDataReader reader = cmd.ExecuteReader();
+
+      while (reader.Read())
+        tags.Add(new Tag(reader["tagName"].ToString(), (int)(reader["id"])));
+
+      _conn.Close();
+      return tags;
+    } 
+
+    public List<Tag> UpdateTags(int docID, string[] names)
+    {
+      // Tags associated with document
+      List<Tag> docTags = GetDocumentTags(docID);
+      // Tags in Database
+      List<Tag> storedTags = GetTags();
+      // Tags to add (if not already added)
+      List<Tag> tags = new List<Tag>();
+
+      // TODO: Optimize this
+      foreach (Tag t in docTags)
+      {
+        bool found = FoundInArray(t, names);
+        
+        if (!found)
+        {
+          // remove
+          RemoveDocumentTag(docID, t);
+          docTags.Remove(t);
+        }
+      }
+
+      foreach (string n in names)
+      {
+        int index = FoundInList(n, storedTags);
+        int id = 0;
+
+        if (index == -1)
+          // Create and insert new tag
+          id = CreateTag(n);
+        else
+          id = storedTags[index].ID;
+
+        tags.Add(new Tag(n.Trim(), id));
+      }
+
+      foreach (Tag t in tags)
+      {
+        bool found = false;
+
+        for (int i = 0; i < docTags.Count && !found; i++)
+        {
+          if (docTags[i].Name.ToLower() == t.Name.ToLower())
+            found = true;
+        }
+
+        if (!found)
+        {
+          docTags.Add(t);
+          AddDocumentTag(docID, t.ID);
+        }
+      }
+
+      return docTags;
+    }
+
+    private int FoundInList(string name, List<Tag> tags)
+    {
+      int index = -1;
+      bool found = false;
+
+      for (int i = 0; i < tags.Count && !found; i++)
+      {
+        if (tags[i].Name.ToLower().Trim() == name.ToLower().Trim())
+        {
+          found = true;
+          index = i;
+        }
+      }
+
+      return index;
+    }
+
+    private void AddDocumentTag(int docID, int tagID)
+    {
+      SqlCommand cmd = new SqlCommand("AddDocumentTag", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@docID", docID);
+      cmd.Parameters.AddWithValue("@tagID", tagID);
+
+      _conn.Open();
+      SqlTransaction trans = _conn.BeginTransaction();
+      cmd.Transaction = trans;
+
+      try
+      {
+        cmd.ExecuteNonQuery();
+      }
+      catch (SqlException exception)
+      {
+        
+      }
+
+      trans.Commit();
+      _conn.Close();
+    }
+
+    private bool FoundInArray(Tag tag, string[] names)
+    {
+      bool found = false;
+
+      for (int i = 0; i < names.Length && !found; i++)
+      {
+        if (tag.Name.ToLower() == names[i].ToLower())
+          found = true;
+      }
+
+      return found;
+    }
+
+    private int CreateTag(string name)
+    {
+      int id = -1;
+
+      SqlCommand cmd = new SqlCommand("CreateTag", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@tagName", name.Trim());
+      SqlParameter returnValue = cmd.Parameters.Add("@ret_id", SqlDbType.Int);
+      returnValue.Direction = ParameterDirection.ReturnValue;
+
+      _conn.Open();
+      SqlTransaction trans = _conn.BeginTransaction();
+      cmd.Transaction = trans;
+      try
+      {
+        cmd.ExecuteNonQuery();
+        id = (int)(cmd.Parameters["@ret_id"].Value);
+      }
+      catch (SqlException exception)
+      {
+        id = -1;
+      }
+
+      trans.Commit();
+      _conn.Close();
+
+      return id;
+    }
+
+    private void RemoveDocumentTag(int id, Tag t)
+    {
+      SqlCommand cmd = new SqlCommand("RemoveDocumentTag", _conn);
+      cmd.CommandType = CommandType.StoredProcedure;
+
+      cmd.Parameters.AddWithValue("@docID", id);
+      cmd.Parameters.AddWithValue("@tagID", t.ID);
+
+      _conn.Open();
+      SqlTransaction trans = _conn.BeginTransaction();
+      cmd.Transaction = trans;
+      cmd.ExecuteNonQuery();
+
+      trans.Commit();
+      _conn.Close();
     }
   }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace MyDocumanager
 {
@@ -8,11 +9,13 @@ namespace MyDocumanager
     private readonly string _title;
     private readonly string _description;
     private int _id;
+    private List<Tag> _tags;
 
     public string FilePath { get { return _filePath; } }
     public string Title { get { return _title; } }
     public string Description { get { return _description; } }
     public int ID { get { return _id; } set { _id = value;  } }
+    public List<Tag> Tags { get { return _tags; }set { _tags = value; } } 
 
     public Document(string fp, string t) : base(t)
     {
