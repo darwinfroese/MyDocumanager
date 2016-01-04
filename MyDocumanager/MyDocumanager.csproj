@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Author.cs" />
     <Compile Include="DBInterface.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentComparer.cs" />
